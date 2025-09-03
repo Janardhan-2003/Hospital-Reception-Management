@@ -14,7 +14,18 @@ initExcelFile();
 // @desc    Add a new patient
 export const addPatient = (req, res) => {
   try {
-    const newPatient = req.body;
+    // Normalize the patient data with optional fields
+    const newPatient = {
+      date: req.body.date || new Date().toISOString().split('T')[0],
+      name: req.body.name || '',
+      age: req.body.age || '',
+      place: req.body.place || '',
+      phone: req.body.phone || '', // Optional - empty if not provided
+      ipNo: req.body.ipNo || '',
+      sNo: req.body.sNo || '',
+      referralName: req.body.referralName || '',
+      referralPhone: req.body.referralPhone || '', // Optional
+    };
 
     // Validate input
     const { isValid, errors } = validatePatient(newPatient);
@@ -42,12 +53,19 @@ export const addPatient = (req, res) => {
 // @desc    Get all patients (with filters)
 export const getPatients = (req, res) => {
   try {
-    const filters = req.query; // example: ?name=John&place=Hyderabad
+    const filters = req.query;
+    console.log("=== DEBUG: Received filters ===");
+    console.log(filters);
+    console.log("Filter keys:", Object.keys(filters));
+    
     let patients = [];
 
     if (Object.keys(filters).length > 0) {
+      console.log("Applying filters...");
       patients = filterPatients(filters);
+      console.log(`Found ${patients.length} patients after filtering`);
     } else {
+      console.log("No filters, returning all patients");
       patients = readPatients();
     }
 
@@ -57,6 +75,7 @@ export const getPatients = (req, res) => {
       data: patients,
     });
   } catch (err) {
+    console.error("Error in getPatients:", err);
     res.status(500).json({ success: false, message: err.message });
   }
 };

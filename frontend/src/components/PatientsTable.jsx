@@ -1,6 +1,16 @@
 import { Eye } from 'lucide-react';
+import Pagination from './Pagination';
 
-const PatientsTable = ({ patients, onViewPatient, loading }) => {
+const PatientsTable = ({ 
+  patients, 
+  onViewPatient, 
+  loading,
+  totalItems = 0,
+  currentPage = 1,
+  totalPages = 0,
+  onPageChange,
+  showPagination = true
+}) => {
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
@@ -11,11 +21,25 @@ const PatientsTable = ({ patients, onViewPatient, loading }) => {
     );
   }
 
+  // Calculate display information for header
+  const itemsPerPage = 15;
+  const startItem = totalItems > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200">
         <h2 className="text-lg font-semibold text-gray-800">
-          Patients List ({patients.length} records)
+          Patients List
+          {showPagination && totalItems > 0 ? (
+            <span className="text-sm font-normal text-gray-600 ml-2">
+              (Showing {startItem}-{endItem} of {totalItems} records)
+            </span>
+          ) : (
+            <span className="text-sm font-normal text-gray-600 ml-2">
+              ({patients.length} records)
+            </span>
+          )}
         </h2>
       </div>
       
@@ -58,8 +82,8 @@ const PatientsTable = ({ patients, onViewPatient, loading }) => {
           <tbody className="bg-white divide-y divide-gray-200">
             {patients.length === 0 ? (
               <tr>
-                <td colSpan="9" className="px-6 py-12 text-center text-gray-500">
-                  No patients found
+                <td colSpan="10" className="px-6 py-12 text-center text-gray-500">
+                  {loading ? 'Loading patients...' : 'No patients found'}
                 </td>
               </tr>
             ) : (
@@ -94,8 +118,8 @@ const PatientsTable = ({ patients, onViewPatient, loading }) => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <button
-                      onClick={() => onViewPatient(patient.id || index)}
-                      className="text-blue-600 hover:text-blue-800 flex items-center space-x-1 transition-colors"
+                      onClick={() => onViewPatient(patient["S.No"])}
+                      className="text-blue-600 hover:text-blue-800 flex items-center space-x-1 transition-colors cursor-pointer"
                     >
                       <Eye size={16} />
                       <span>View</span>
@@ -107,6 +131,17 @@ const PatientsTable = ({ patients, onViewPatient, loading }) => {
           </tbody>
         </table>
       </div>
+      
+      {/* Integrated Pagination */}
+      {showPagination && totalItems > 0 && onPageChange && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          onPageChange={onPageChange}
+          loading={loading}
+        />
+      )}
     </div>
   );
 };

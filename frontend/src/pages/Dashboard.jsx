@@ -7,23 +7,35 @@ import PatientsTable from '../components/PatientsTable';
 import DownloadButtons from '../components/DownloadButtons';
 import PatientModal from '../components/PatientModal';
 import AddPatientModal from '../components/AddPatientModal';
+
 import { getPatients, getPatientById, addPatient, downloadPatients } from '../api/index';
 
 const Dashboard = () => {
   const [patients, setPatients] = useState([]);
   const [filteredPatients, setFilteredPatients] = useState([]);
+  const [paginatedPatients, setPaginatedPatients] = useState([]);
   const [stats, setStats] = useState({
     totalPatients: 0,
     todayVisits: 0,
     malePatients: 0,
     femalePatients: 0
   });
+  // UPDATED FILTERS STATE - Added all the new fields, removed gender, fromDate, toDate
   const [filters, setFilters] = useState({
     name: '',
-    gender: '',
-    fromDate: '',
-    toDate: ''
+    place: '',
+    date: '',
+    ipNo: '',
+    sNo: '',
+    age: '',
+    referralName: ''
   });
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15; // Fixed at 15 entries per page
+  const [totalPages, setTotalPages] = useState(0);
+  
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showAddPatient, setShowAddPatient] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,11 +46,17 @@ const Dashboard = () => {
     fetchPatients();
   }, []);
 
-  
+  // Calculate stats and set filtered patients when patients data changes
   useEffect(() => {
     calculateStats(patients);
     setFilteredPatients(patients);
+    setCurrentPage(1); // Reset to first page when data changes
   }, [patients]);
+
+  // Update pagination when filtered patients or pagination settings change
+  useEffect(() => {
+    updatePagination();
+  }, [filteredPatients, currentPage]);
 
   const fetchPatients = async () => {
     setLoading(true);
@@ -79,24 +97,56 @@ const Dashboard = () => {
     });
   };
 
+  const updatePagination = () => {
+    const totalItems = filteredPatients.length;
+    const calculatedTotalPages = Math.ceil(totalItems / itemsPerPage);
+    
+    setTotalPages(calculatedTotalPages);
+    
+    // Calculate start and end indices for current page
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+    
+    // Get current page data
+    const currentPageData = filteredPatients.slice(startIndex, endIndex);
+    setPaginatedPatients(currentPageData);
+  };
+
+  // UPDATED SEARCH FUNCTION - Now calls backend API with filters
   const handleSearch = async () => {
+    console.log('Searching with filters:', filters);
     setLoading(true);
     try {
-      // Create filter object with only non-empty values
+      // Build filter object (remove empty values)
       const filterParams = {};
+      
       if (filters.name) filterParams.name = filters.name;
-      if (filters.gender) filterParams.gender = filters.gender;
-      if (filters.fromDate) filterParams.fromDate = filters.fromDate;
-      if (filters.toDate) filterParams.toDate = filters.toDate;
+      if (filters.place) filterParams.place = filters.place;
+      if (filters.date) filterParams.date = filters.date;
+      if (filters.ipNo) filterParams.ipNo = filters.ipNo;
+      if (filters.sNo) filterParams.sNo = filters.sNo;
+      if (filters.age) filterParams.age = filters.age;
+      if (filters.referralName) filterParams.referralName = filters.referralName;
 
+      console.log('Filter params:', filterParams);
+      
+      // Call API with filters object
       const response = await getPatients(filterParams);
-      // Handle the backend response structure
-      setFilteredPatients(response.data || []);
+      const filteredData = response.data || [];
+      
+      console.log('Filtered results:', filteredData);
+      
+      setFilteredPatients(filteredData);
+      setCurrentPage(1); // Reset to first page when searching
     } catch (error) {
-      console.error('Error filtering patients:', error);
+      console.error('Error searching patients:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   const handleViewPatient = async (patientId) => {
@@ -122,6 +172,7 @@ const Dashboard = () => {
     }
   };
 
+  // UPDATED DOWNLOAD FUNCTION - Use new filter fields
   const handleDownload = async (filtered = false) => {
     setDownloadLoading(true);
     try {
@@ -130,9 +181,12 @@ const Dashboard = () => {
       if (filtered) {
         // Use current filters for filtered download
         if (filters.name) filterParams.name = filters.name;
-        if (filters.gender) filterParams.gender = filters.gender;
-        if (filters.fromDate) filterParams.fromDate = filters.fromDate;
-        if (filters.toDate) filterParams.toDate = filters.toDate;
+        if (filters.place) filterParams.place = filters.place;
+        if (filters.date) filterParams.date = filters.date;
+        if (filters.ipNo) filterParams.ipNo = filters.ipNo;
+        if (filters.sNo) filterParams.sNo = filters.sNo;
+        if (filters.age) filterParams.age = filters.age;
+        if (filters.referralName) filterParams.referralName = filters.referralName;
       }
 
       const response = await downloadPatients(filterParams);
@@ -198,12 +252,17 @@ const Dashboard = () => {
           />
         </div>
 
-        {/* Patients Table */}
+        {/* Patients Table with Integrated Pagination */}
         <div className="mb-8">
           <PatientsTable
-            patients={filteredPatients}
+            patients={paginatedPatients}
             onViewPatient={handleViewPatient}
             loading={loading}
+            totalItems={filteredPatients.length}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            showPagination={true}
           />
         </div>
 

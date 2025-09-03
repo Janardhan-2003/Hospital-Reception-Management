@@ -134,7 +134,7 @@ const PatientModal = ({ patient, onClose }) => {
         <div className="flex justify-end p-6 border-t border-gray-200">
           <button
             onClick={onClose}
-            className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition-colors"
+            className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition-colors cursor-pointer"
           >
             Close
           </button>

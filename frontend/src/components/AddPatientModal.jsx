@@ -52,13 +52,17 @@ const AddPatientModal = ({ onClose, onSave, loading }) => {
       newErrors["Age"] = 'Please enter a valid age (1-150)';
     }
 
-    if (!formData["Phone"].trim()) {
-      newErrors["Phone"] = 'Phone number is required';
-    } else if (!/^\d{10}$/.test(formData["Phone"].replace(/\D/g, ''))) {
+    if (!formData["Place"].trim()) {
+      newErrors["Place"] = 'Place is required';
+    }
+
+    // Phone is now optional - only validate if provided
+    if (formData["Phone"] && formData["Phone"].trim() && !/^\d{10}$/.test(formData["Phone"].replace(/\D/g, ''))) {
       newErrors["Phone"] = 'Please enter a valid 10-digit phone number';
     }
 
-    if (formData["Referral Phone"] && !/^\d{10}$/.test(formData["Referral Phone"].replace(/\D/g, ''))) {
+    // Referral Phone is optional - only validate if provided
+    if (formData["Referral Phone"] && formData["Referral Phone"].trim() && !/^\d{10}$/.test(formData["Referral Phone"].replace(/\D/g, ''))) {
       newErrors["Referral Phone"] = 'Please enter a valid 10-digit phone number';
     }
 
@@ -176,10 +180,10 @@ const AddPatientModal = ({ onClose, onSave, loading }) => {
               {errors["Age"] && <p className="mt-1 text-sm text-red-600">{errors["Age"]}</p>}
             </div>
 
-            {/* Phone */}
+            {/* Phone - NOW OPTIONAL */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone *
+                Phone <span className="text-gray-400 text-sm">(Optional)</span>
               </label>
               <input
                 type="tel"
@@ -188,43 +192,46 @@ const AddPatientModal = ({ onClose, onSave, loading }) => {
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                   errors["Phone"] ? 'border-red-500' : 'border-gray-300'
                 }`}
-                placeholder="Enter phone number"
+                placeholder="Enter phone number (optional)"
               />
               {errors["Phone"] && <p className="mt-1 text-sm text-red-600">{errors["Phone"]}</p>}
             </div>
 
-            {/* Place */}
+            {/* Place - NOW REQUIRED */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Place
+                Place *
               </label>
               <input
                 type="text"
                 value={formData["Place"]}
                 onChange={(e) => handleInputChange('Place', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors["Place"] ? 'border-red-500' : 'border-gray-300'
+                }`}
                 placeholder="Enter place"
               />
+              {errors["Place"] && <p className="mt-1 text-sm text-red-600">{errors["Place"]}</p>}
             </div>
 
             {/* Referral Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Referral Name
+                Referral Name <span className="text-gray-400 text-sm">(Optional)</span>
               </label>
               <input
                 type="text"
                 value={formData["Referral Name"]}
                 onChange={(e) => handleInputChange('Referral Name', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter referral name"
+                placeholder="Enter referral name (optional)"
               />
             </div>
 
             {/* Referral Phone */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Referral Phone
+                Referral Phone <span className="text-gray-400 text-sm">(Optional)</span>
               </label>
               <input
                 type="tel"
@@ -233,7 +240,7 @@ const AddPatientModal = ({ onClose, onSave, loading }) => {
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                   errors["Referral Phone"] ? 'border-red-500' : 'border-gray-300'
                 }`}
-                placeholder="Enter referral phone number"
+                placeholder="Enter referral phone number (optional)"
               />
               {errors["Referral Phone"] && <p className="mt-1 text-sm text-red-600">{errors["Referral Phone"]}</p>}
             </div>
@@ -244,14 +251,14 @@ const AddPatientModal = ({ onClose, onSave, loading }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
+              className="px-6 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-6 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+              className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-6 py-2 rounded-lg flex items-center space-x-2 transition-colors cursor-pointer"
             >
               <Save size={18} />
               <span>Save Patient</span>

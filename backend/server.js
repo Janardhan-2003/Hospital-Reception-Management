@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import patientRoutes from "./routes/patientRoutes.js";
-import { initExcelFile } from "./config/excel.js"; // ✅ new import
+import { initExcelFile } from "./services/excelService.js"; // ✅ new import
 
 const app = express();
 const PORT = process.env.PORT || 5000;
