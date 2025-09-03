@@ -1,57 +1,57 @@
-import { Search, Filter, X } from 'lucide-react';
-import { useState } from 'react';
+import { Search, Filter, X } from "lucide-react";
+import { useState } from "react";
 
 const Filters = ({ filters, onFiltersChange, onSearch }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalFilters, setModalFilters] = useState({
-    date: filters.date || '',
-    ipNo: filters.ipNo || '',
-    sNo: filters.sNo || '',
-    age: filters.age || '',
-    referralName: filters.referralName || ''
+    date: filters.date || "",
+    ipNo: filters.ipNo || "",
+    sNo: filters.sNo || "",
+    age: filters.age || "",
+    referralName: filters.referralName || "",
   });
 
   const handleInputChange = (field, value) => {
     console.log(`Filter changed: ${field} = ${value}`);
     const newFilters = {
       ...filters,
-      [field]: value
+      [field]: value,
     };
-    console.log('All filters:', newFilters);
+    console.log("All filters:", newFilters);
     onFiltersChange(newFilters);
   };
 
   const handleModalFilterChange = (field, value) => {
     setModalFilters({
       ...modalFilters,
-      [field]: value
+      [field]: value,
     });
   };
 
   const applyModalFilters = () => {
     onFiltersChange({
       ...filters,
-      ...modalFilters
+      ...modalFilters,
     });
     setIsModalOpen(false);
   };
 
   const clearAllFilters = () => {
     const clearedFilters = {
-      name: '',
-      place: '',
-      date: '',
-      ipNo: '',
-      sNo: '',
-      age: '',
-      referralName: ''
+      name: "",
+      place: "",
+      date: "",
+      ipNo: "",
+      sNo: "",
+      age: "",
+      referralName: "",
     };
     setModalFilters({
-      date: '',
-      ipNo: '',
-      sNo: '',
-      age: '',
-      referralName: ''
+      date: "",
+      ipNo: "",
+      sNo: "",
+      age: "",
+      referralName: "",
     });
     onFiltersChange(clearedFilters);
   };
@@ -59,8 +59,10 @@ const Filters = ({ filters, onFiltersChange, onSearch }) => {
   return (
     <>
       <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Search & Filter</h2>
-        
+        <h2 className="text-xl font-bold text-gray-900 mb-6">
+          Search & Filter
+        </h2>
+
         {/* Main Search Section */}
         <div className="flex flex-col lg:flex-row gap-4 mb-6">
           {/* Name Search */}
@@ -69,12 +71,15 @@ const Filters = ({ filters, onFiltersChange, onSearch }) => {
               Search by Name
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="Enter patient name..."
-                value={filters.name || ''}
-                onChange={(e) => handleInputChange('name', e.target.value)}
+                value={filters.name || ""}
+                onChange={(e) => handleInputChange("name", e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               />
             </div>
@@ -86,12 +91,15 @@ const Filters = ({ filters, onFiltersChange, onSearch }) => {
               Search by Place
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="Enter place..."
-                value={filters.place || ''}
-                onChange={(e) => handleInputChange('place', e.target.value)}
+                value={filters.place || ""}
+                onChange={(e) => handleInputChange("place", e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               />
             </div>
@@ -108,7 +116,7 @@ const Filters = ({ filters, onFiltersChange, onSearch }) => {
               <Filter size={18} />
               <span>More Filters</span>
             </button>
-            
+
             <button
               onClick={clearAllFilters}
               className="text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg transition-colors cursor-pointer"
@@ -133,7 +141,9 @@ const Filters = ({ filters, onFiltersChange, onSearch }) => {
           <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
             <div className="flex justify-between items-center p-6 border-b border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900">Additional Filters</h3>
+              <h3 className="text-xl font-bold text-gray-900">
+                Additional Filters
+              </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -153,7 +163,9 @@ const Filters = ({ filters, onFiltersChange, onSearch }) => {
                   <input
                     type="date"
                     value={modalFilters.date}
-                    onChange={(e) => handleModalFilterChange('date', e.target.value)}
+                    onChange={(e) =>
+                      handleModalFilterChange("date", e.target.value)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
@@ -167,7 +179,9 @@ const Filters = ({ filters, onFiltersChange, onSearch }) => {
                     type="text"
                     placeholder="Enter IP number..."
                     value={modalFilters.ipNo}
-                    onChange={(e) => handleModalFilterChange('ipNo', e.target.value)}
+                    onChange={(e) =>
+                      handleModalFilterChange("ipNo", e.target.value)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
@@ -181,7 +195,9 @@ const Filters = ({ filters, onFiltersChange, onSearch }) => {
                     type="text"
                     placeholder="Enter serial number..."
                     value={modalFilters.sNo}
-                    onChange={(e) => handleModalFilterChange('sNo', e.target.value)}
+                    onChange={(e) =>
+                      handleModalFilterChange("sNo", e.target.value)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
@@ -195,7 +211,9 @@ const Filters = ({ filters, onFiltersChange, onSearch }) => {
                     type="number"
                     placeholder="Enter age..."
                     value={modalFilters.age}
-                    onChange={(e) => handleModalFilterChange('age', e.target.value)}
+                    onChange={(e) =>
+                      handleModalFilterChange("age", e.target.value)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
@@ -209,7 +227,9 @@ const Filters = ({ filters, onFiltersChange, onSearch }) => {
                     type="text"
                     placeholder="Enter referral name..."
                     value={modalFilters.referralName}
-                    onChange={(e) => handleModalFilterChange('referralName', e.target.value)}
+                    onChange={(e) =>
+                      handleModalFilterChange("referralName", e.target.value)
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>

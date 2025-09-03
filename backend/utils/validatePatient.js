@@ -41,7 +41,13 @@ export const validatePatient = (patient) => {
     errors.sNo = "S.No is required";
   }
 
-  // Optional fields validation (only validate if provided)
+  // Referral Name is now REQUIRED
+  const referralName = getFieldValue('Referral Name', 'referralName');
+  if (!referralName || !referralName.trim()) {
+    errors.referralName = "Referral Name is required";
+  }
+
+  // ONLY PHONES are optional - validate format if provided
   const phone = getFieldValue('Phone', 'phone');
   if (phone && phone.trim()) {
     const phoneRegex = /^[0-9]{10}$/;
@@ -56,11 +62,6 @@ export const validatePatient = (patient) => {
     if (!phoneRegex.test(referralPhone.replace(/\s+/g, ""))) {
       errors.referralPhone = "Referral phone must be a valid 10-digit number";
     }
-  }
-
-  const referralName = getFieldValue('Referral Name', 'referralName');
-  if (referralName && referralName.trim && !referralName.trim()) {
-    errors.referralName = "Referral Name cannot be empty if provided";
   }
 
   return {

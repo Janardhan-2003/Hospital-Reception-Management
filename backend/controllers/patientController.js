@@ -11,25 +11,29 @@ import { validatePatient } from "../utils/validatePatient.js";
 // Ensure Excel file is ready
 initExcelFile();
 
-// @desc    Add a new patient
 export const addPatient = (req, res) => {
   try {
-    // Normalize the patient data with optional fields
-    const newPatient = {
-      date: req.body.date || new Date().toISOString().split('T')[0],
-      name: req.body.name || '',
-      age: req.body.age || '',
-      place: req.body.place || '',
-      phone: req.body.phone || '', // Optional - empty if not provided
-      ipNo: req.body.ipNo || '',
-      sNo: req.body.sNo || '',
-      referralName: req.body.referralName || '',
-      referralPhone: req.body.referralPhone || '', // Optional
+    console.log('Received patient data:', req.body);
+    
+    // Normalize the data to handle both frontend (Excel names) and backend (lowercase) formats
+    const normalizedPatient = {
+      date: req.body.Date || req.body.date || new Date().toISOString().split('T')[0],
+      ipNo: req.body["IP No"] || req.body.ipNo || '',
+      sNo: req.body["S.No"] || req.body.sNo || '',
+      name: req.body.Name || req.body.name || '',
+      age: req.body.Age || req.body.age || '',
+      phone: req.body.Phone || req.body.phone || '', // OPTIONAL
+      place: req.body.Place || req.body.place || '',
+      referralName: req.body["Referral Name"] || req.body.referralName || '', // NOW REQUIRED
+      referralPhone: req.body["Referral Phone"] || req.body.referralPhone || '' // OPTIONAL
     };
 
+    console.log('Normalized patient data:', normalizedPatient);
+
     // Validate input
-    const { isValid, errors } = validatePatient(newPatient);
+    const { isValid, errors } = validatePatient(normalizedPatient);
     if (!isValid) {
+      console.log('Validation errors:', errors);
       return res.status(400).json({
         success: false,
         message: "Validation failed",
@@ -37,15 +41,16 @@ export const addPatient = (req, res) => {
       });
     }
 
-    // Save to Excel
-    writePatient(newPatient);
+    // Save to Excel (pass the original req.body since writePatient expects Excel format)
+    writePatient(req.body);
 
     res.status(201).json({
       success: true,
       message: "New patient added successfully",
-      data: newPatient,
+      data: req.body,
     });
   } catch (err) {
+    console.error('Error in addPatient:', err);
     res.status(500).json({ success: false, message: err.message });
   }
 };

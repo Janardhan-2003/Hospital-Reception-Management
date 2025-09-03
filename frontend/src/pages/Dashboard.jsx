@@ -158,19 +158,21 @@ const Dashboard = () => {
     }
   };
 
-  const handleAddPatient = async (patientData) => {
-    setLoading(true);
-    try {
-      await addPatient(patientData);
-      setShowAddPatient(false);
-      // Refresh the patients list
-      await fetchPatients();
-    } catch (error) {
-      console.error('Error adding patient:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+const handleAddPatient = async (patientData) => {
+  setLoading(true);
+  try {
+    console.log('Sending patient data:', patientData); // Add this
+    await addPatient(patientData);
+    setShowAddPatient(false);
+    // Refresh the patients list
+    await fetchPatients();
+  } catch (error) {
+    console.error('Error adding patient:', error);
+    console.error('Error response:', error.response?.data); // Add this to see backend error
+  } finally {
+    setLoading(false);
+  }
+};
 
   // UPDATED DOWNLOAD FUNCTION - Use new filter fields
   const handleDownload = async (filtered = false) => {

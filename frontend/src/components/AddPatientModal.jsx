@@ -214,18 +214,21 @@ const AddPatientModal = ({ onClose, onSave, loading }) => {
               {errors["Place"] && <p className="mt-1 text-sm text-red-600">{errors["Place"]}</p>}
             </div>
 
-            {/* Referral Name */}
+            {/* Referral Name - NOW REQUIRED */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Referral Name <span className="text-gray-400 text-sm">(Optional)</span>
+                Referral Name *
               </label>
               <input
                 type="text"
                 value={formData["Referral Name"]}
                 onChange={(e) => handleInputChange('Referral Name', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter referral name (optional)"
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors["Referral Name"] ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Enter referral name"
               />
+              {errors["Referral Name"] && <p className="mt-1 text-sm text-red-600">{errors["Referral Name"]}</p>}
             </div>
 
             {/* Referral Phone */}
